@@ -1,0 +1,462 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#c92d39">
+<title>PRANITDEX // Trainer Archive</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
+
+:root{
+  --red:#d83c47;--red2:#a91e2a;--paper:#fff8df;
+  --cream:#f0e6c5;--ink:#282a32;--muted:#827b68;
+  --green:#b6e6a6;--blue:#b6e4ee;--purple:#dac7f3;
+  --yellow:#f8d36a;--border:3px solid var(--ink);
+}
+*{box-sizing:border-box}
+body{margin:0;background:#dcd2b4;color:var(--ink);font-family:'VT323',monospace;font-size:22px}
+button,input{font:inherit}
+button,a{-webkit-tap-highlight-color:transparent}
+button{cursor:pointer}
+a{color:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #1678b4;outline-offset:3px}
+.pixel{border:var(--border);box-shadow:4px 4px 0 var(--ink)}
+.mini{font:9px 'Press Start 2P';line-height:2}
+.small{font-size:17px}
+.muted{color:var(--muted)}
+header{height:75px;background:var(--red);color:white;border-bottom:4px solid var(--ink);display:flex;align-items:center;justify-content:space-between;padding:0 4%;gap:12px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo h1{font:12px 'Press Start 2P';line-height:1.8;margin:0}
+.logo small{display:block;font-size:17px;letter-spacing:2px}
+.ball{width:40px;height:40px;border:3px solid var(--ink);border-radius:50%;background:linear-gradient(#fff 0 46%,var(--ink) 46% 56%,#e7e5d7 56%);position:relative;flex-shrink:0}
+.ball:after{content:"";position:absolute;width:10px;height:10px;background:white;border:3px solid var(--ink);border-radius:50%;left:12px;top:13px}
+.header-status{display:flex;align-items:center;gap:10px}
+.online{background:var(--green);border:2px solid var(--ink);color:var(--ink);padding:4px 8px;font-size:17px}
+.sound{background:transparent;border:2px solid white;color:white;padding:5px 9px}
+.layout{max-width:1440px;margin:auto;display:grid;grid-template-columns:245px minmax(0,1fr);gap:23px;padding:25px 24px}
+aside{align-self:start;background:var(--red);border:var(--border);padding:13px;box-shadow:5px 5px 0 var(--ink);position:sticky;top:15px}
+.trainer-card{background:var(--paper);border:var(--border);padding:13px;text-align:center}
+.avatar-wrap{background:#c7e3bd;border:var(--border);padding:8px;position:relative}
+.avatar{width:100%;max-width:125px;aspect-ratio:1;object-fit:cover;image-rendering:pixelated}
+.trainer-name{font:9px 'Press Start 2P';line-height:2.1;margin-top:12px;overflow-wrap:anywhere}
+.trainer-level{font-size:19px;color:#675e4b}
+nav{display:grid;gap:8px;margin-top:13px}
+nav button{display:flex;align-items:center;gap:10px;text-align:left;background:var(--paper);border:2px solid var(--ink);padding:10px 8px;transition:transform .15s}
+nav button:hover{transform:translateX(3px);background:#fff0ad}
+nav button.active{background:var(--yellow);box-shadow:inset 4px 0 var(--red);font-weight:bold}
+.nav-icon{width:26px;text-align:center;font-size:25px}
+.side-foot{color:#fff0d1;line-height:1.2;font-size:19px;margin:15px 3px 3px}
+main{min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 0 15px;font-size:19px}
+.topbar b{font:9px 'Press Start 2P';line-height:2}
+.breadcrumb{color:#615b4d}
+.screen{background:var(--paper);border:4px solid var(--ink);box-shadow:7px 7px 0 var(--ink);min-height:690px;position:relative;overflow:hidden}
+.screen::before{content:"";position:absolute;top:0;left:0;right:0;height:7px;background:repeating-linear-gradient(90deg,var(--red) 0 30px,transparent 30px 36px)}
+.page{padding:clamp(17px,3vw,34px);animation:appear .2s ease-out}
+@keyframes appear{from{opacity:.35;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.page-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;border-bottom:3px dashed #c4b99b;padding:10px 0 18px;margin-bottom:23px}
+.page-head h2{font:clamp(15px,2vw,23px) 'Press Start 2P';line-height:1.9;margin:0 0 7px}
+.page-head p{margin:0;font-size:21px;color:#766d59}
+.page-no{font:9px 'Press Start 2P';line-height:2.2;background:var(--yellow);padding:8px;border:2px solid var(--ink);white-space:nowrap}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:center}
+.hero h3{font:clamp(18px,2.5vw,30px) 'Press Start 2P';line-height:1.8;margin:10px 0}
+.hero h3 span{color:var(--red2)}
+.hero p{line-height:1.35;font-size:25px}
+.hero-art{background:#c8e5bf;border:var(--border);min-height:260px;display:grid;place-items:center;position:relative;overflow:hidden}
+.hero-art .sun{position:absolute;width:175px;height:175px;border:3px dashed #7fa779;border-radius:50%;animation:rotate 24s linear infinite}
+.hero-art img{width:135px;height:135px;object-fit:cover;image-rendering:pixelated;z-index:1;border:4px solid var(--ink);background:var(--paper)}
+@keyframes rotate{to{transform:rotate(360deg)}}
+.art-label{position:absolute;bottom:9px;left:9px;background:var(--paper);border:2px solid var(--ink);padding:3px 7px;font-size:18px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{display:inline-flex;justify-content:center;align-items:center;text-decoration:none;background:var(--yellow);border:2px solid var(--ink);box-shadow:3px 3px 0 var(--ink);padding:9px 12px;color:var(--ink)}
+.btn:hover{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--ink)}
+.btn.dark{background:var(--ink);color:white}
+.btn.red{background:var(--red);color:white}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:24px 0}
+.stat{border:2px solid var(--ink);background:#fff1bd;padding:12px;min-width:0}
+.stat:nth-child(2){background:#d4e9c7}
+.stat:nth-child(3){background:#d4e7f2}
+.stat b{display:block;font:clamp(12px,2vw,20px) 'Press Start 2P';line-height:1.8;overflow-wrap:anywhere}
+.stat span{font-size:20px;color:#655d4c}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:28px 0 13px}
+.section-title h3{font:10px 'Press Start 2P';line-height:1.9;margin:0}
+.section-title span{font-size:19px;color:#766d59}
+.quick-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.quick{border:2px solid var(--ink);padding:13px;background:white;cursor:pointer;text-align:left;transition:transform .15s}
+.quick:hover{transform:translateY(-3px);background:#fff0b1}
+.quick .symbol{font-size:32px;display:block;margin-bottom:10px}
+.quick b{font-size:22px;font-weight:normal;display:block}
+.quick small{font-size:18px;color:#776e59}
+.dex-controls{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:14px}
+.dex-controls input,.dex-controls select{background:white;border:2px solid var(--ink);padding:9px;min-width:0}
+.dex-controls input{flex:1;min-width:140px}
+.dex-controls select{max-width:100%}
+.filters{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.filter{background:transparent;border:2px solid var(--ink);padding:5px 9px}
+.filter.active{background:var(--ink);color:white}
+.project-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.project{border:2px solid var(--ink);padding:12px;background:white;cursor:pointer;min-width:0;transition:transform .15s,background .15s}
+.project:hover,.project.selected{background:#fff0b1;transform:translateY(-2px)}
+.project-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.project-num{font-size:17px;color:#817967}
+.project-icon{width:52px;height:52px;background:#d5e9c8;border:2px solid var(--ink);display:grid;place-items:center;font-size:32px;flex-shrink:0}
+.project h4{font-size:24px;font-weight:normal;margin:10px 0 5px;overflow-wrap:anywhere}
+.project p{font-size:20px;line-height:1.2;color:#6d6655;margin:0 0 12px}
+.types{display:flex;flex-wrap:wrap;gap:5px}
+.type{border:1px solid var(--ink);background:#d5e9c8;padding:3px 6px;font-size:17px}
+.type.security{background:#f1c1ae}
+.type.ai{background:var(--purple)}
+.type.robotics{background:var(--blue)}
+.type.systems{background:var(--yellow)}
+.detail{margin-top:17px;padding:15px;background:#d8e9cf;border:2px solid var(--ink);overflow-wrap:anywhere}
+.detail h4{font:10px 'Press Start 2P';line-height:2;margin:0 0 10px}
+.detail p{line-height:1.3}
+.detail .btn{margin:4px 7px 3px 0}
+.loading,.empty{grid-column:1/-1;border:2px dashed var(--ink);padding:22px;text-align:center}
+.badge-intro{background:#e0edcf;border:2px solid var(--ink);padding:16px;display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.badge-intro .trophy{font-size:47px}
+.badge-intro p{line-height:1.3;margin:6px 0}
+.badge-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.badge-card{border:2px solid var(--ink);padding:13px 8px;background:white;text-align:center;min-width:0;position:relative}
+.badge-card.earned{background:#fff0b6}
+.badge-card .medal{width:78px;height:78px;margin:7px auto 13px;display:grid;place-items:center;font-size:39px;position:relative;clip-path:polygon(25% 0,75% 0,100% 25%,100% 75%,75% 100%,25% 100%,0 75%,0 25%);background:var(--yellow);border:0;filter:drop-shadow(2px 3px 0 var(--ink))}
+.badge-card:nth-child(3n+2) .medal{background:#b8dcf2}
+.badge-card:nth-child(3n) .medal{background:#c8e7b6}
+.badge-card h4{font-size:23px;font-weight:normal;margin:5px 0 7px}
+.badge-card p{font-size:19px;line-height:1.15;color:#746b58;margin:0 0 12px}
+.badge-label{display:inline-block;border:1px solid var(--ink);padding:3px 6px;background:#e7e2d1;font-size:16px}
+.badge-card.earned .badge-label{background:#bfe6ac}
+.badge-note{margin-top:17px;font-size:19px;line-height:1.35;color:#6e6654}
+.profile-layout{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:17px;align-items:start}
+.id-card{border:3px solid var(--ink);background:#c8e6bd;padding:16px;text-align:center;position:relative}
+.id-card:before{content:"TRAINER ID";display:block;text-align:left;font:9px 'Press Start 2P';line-height:2}
+.profile-avatar{width:min(100%,185px);aspect-ratio:1;object-fit:cover;image-rendering:pixelated;border:3px solid var(--ink);background:var(--paper);margin:10px auto}
+.id-card h3{font:10px 'Press Start 2P';line-height:2;overflow-wrap:anywhere}
+.id-card p{margin:6px 0}
+.id-number{background:var(--yellow);border:2px solid var(--ink);padding:7px;margin-top:13px}
+.profile-info{border:2px solid var(--ink);background:white;padding:15px}
+.profile-info h3{font:10px 'Press Start 2P';line-height:2;margin:0 0 12px}
+.info-row{padding:10px 0;border-bottom:1px dashed #b7ac91;display:grid;grid-template-columns:100px minmax(0,1fr);gap:8px;line-height:1.2}
+.info-row span:first-child{color:#857b66}
+.info-row strong{font-weight:normal;overflow-wrap:anywhere}
+.bio{margin-top:15px;background:#fff0bb;border:2px solid var(--ink);padding:14px;line-height:1.35}
+.link-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:15px}
+.skill-list{display:grid;gap:12px}
+.skill-row{display:grid;grid-template-columns:135px minmax(0,1fr);gap:12px;align-items:center;border:2px solid var(--ink);background:white;padding:12px}
+.skill-symbol{font-size:28px}
+.skill-name{font-size:23px}
+.skill-desc{font-size:19px;color:#766d59;line-height:1.2}
+.skill-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.skill-tags span{border:1px solid var(--ink);background:#e0edcf;padding:2px 6px;font-size:16px}
+footer{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:18px 2px 5px;font-size:18px}
+footer a{font-weight:bold}
+.toast{margin-top:13px;background:var(--ink);color:white;padding:8px 11px;font-size:18px}
+.mobile-nav{display:none}
+@media(max-width:850px){
+ .layout{grid-template-columns:195px minmax(0,1fr);gap:16px;padding:19px 15px}
+ .hero{grid-template-columns:1fr}
+ .hero-art{min-height:185px}
+ .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .badge-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .profile-layout{grid-template-columns:1fr}
+ .id-card{display:grid;grid-template-columns:110px 1fr;column-gap:12px;text-align:left}
+ .id-card:before{grid-column:1/-1}
+ .profile-avatar{width:100px;grid-column:1;grid-row:2/5}
+ .id-card h3,.id-card p,.id-number{grid-column:2}
+}
+@media(max-width:600px){
+ header{height:67px;padding:0 12px}
+ .logo h1{font-size:9px}
+ .logo small{font-size:15px}
+ .ball{width:34px;height:34px}
+ .ball:after{left:9px;top:10px}
+ .online{font-size:14px}
+ .layout{display:block;padding:13px 10px 24px}
+ aside{position:static;padding:8px;margin-bottom:16px}
+ .trainer-card{display:flex;align-items:center;text-align:left;gap:12px;padding:7px}
+ .avatar-wrap{width:65px;height:65px;padding:2px;display:grid;place-items:center;flex-shrink:0}
+ .avatar{width:57px;height:57px}
+ .trainer-name{font-size:8px;margin:0}
+ .trainer-level{font-size:18px}
+ nav{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-top:8px}
+ nav button{display:flex;flex-direction:column;gap:2px;text-align:center;padding:6px 1px;font-size:16px}
+ .nav-icon{font-size:22px;width:auto}
+ .side-foot{display:none}
+ .screen{min-height:550px;box-shadow:4px 4px 0 var(--ink)}
+ .page{padding:15px}
+ .page-head{gap:8px}
+ .page-head h2{font-size:13px}
+ .page-no{font-size:8px;padding:5px}
+ .hero h3{font-size:19px}
+ .hero p{font-size:23px}
+ .hero-art{min-height:165px}
+ .stats{gap:5px}
+ .stat{padding:8px 5px}
+ .stat b{font-size:9px}
+ .stat span{font-size:17px}
+ .quick-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .quick{padding:10px}
+ .quick .symbol{font-size:27px}
+ .quick b{font-size:20px}
+ .quick small{font-size:17px}
+ .project-grid{grid-template-columns:1fr}
+ .badge-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .badge-card{padding:10px 5px}
+ .badge-card .medal{width:62px;height:62px;font-size:32px}
+ .badge-card h4{font-size:20px}
+ .badge-card p{font-size:18px}
+ .skill-row{grid-template-columns:1fr;gap:5px}
+ .info-row{grid-template-columns:83px minmax(0,1fr);font-size:20px}
+ .id-card{grid-template-columns:90px 1fr;padding:10px}
+ .profile-avatar{width:80px;height:80px}
+ .id-card h3{font-size:8px}
+ .topbar b{font-size:8px}
+ footer{font-size:17px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo"><div class="ball"></div><div><h1>PRANITDEX</h1><small>TRAINER ARCHIVE // 001</small></div></div>
+ <div class="header-status"><span class="online">● ONLINE</span><button class="sound" id="sound">♪ OFF</button></div>
+</header>
+
+<div class="layout">
+<aside>
+ <div class="trainer-card">
+  <div class="avatar-wrap"><img class="avatar" src="https://github.com/pranitdhanade-sys.png" alt="Trainer avatar"></div>
+  <div><div class="trainer-name">PRANIT DHANADE</div><div class="trainer-level">LV. DEVELOPER</div></div>
+ </div>
+ <nav aria-label="Main navigation">
+  <button class="active" data-page="home"><span class="nav-icon">⌂</span> HOME</button>
+  <button data-page="dex"><span class="nav-icon">▦</span> DEX</button>
+  <button data-page="badges"><span class="nav-icon">🏅</span> BADGES</button>
+  <button data-page="skills"><span class="nav-icon">⚡</span> SKILLS</button>
+  <button data-page="profile"><span class="nav-icon">♟</span> TRAINER</button>
+  <button data-page="profile" data-focus="links"><span class="nav-icon">↗</span> LINKS</button>
+ </nav>
+ <div class="side-foot">"The journey of a thousand commits begins with one line of code."</div>
+</aside>
+
+<main>
+ <div class="topbar"><b>POKÉMON RESEARCH LAB</b><span class="breadcrumb" id="crumb">REGION / HOME</span></div>
+ <div class="screen">
+  <section class="page" id="page-home">
+   <div class="page-head"><div><h2>WELCOME, TRAINER!</h2><p>Your developer journey starts here.</p></div><div class="page-no">001</div></div>
+   <div class="hero">
+    <div>
+     <div class="mini">PLAYER ONE // PRANITDEX</div>
+     <h3>Gotta <span>Build</span> 'Em All.</h3>
+     <p>Computer science student, Linux enthusiast, cybersecurity learner and builder of things that live between hardware and software.</p>
+     <p>Exploring security, AI, robotics, blockchain and the deeper layers of computing.</p>
+     <div class="actions"><button class="btn red" data-go="dex">▦ OPEN POKÉDEX</button><button class="btn" data-go="profile">♟ TRAINER CARD</button></div>
+    </div>
+    <div class="hero-art"><div class="sun"></div><img src="https://github.com/pranitdhanade-sys.png" alt="Pranit's GitHub avatar"><span class="art-label">PLAYER 001 // READY</span></div>
+   </div>
+   <div class="stats">
+    <div class="stat"><b id="repo-count">14+</b><span>Project entries</span></div>
+    <div class="stat"><b>125+</b><span>PicoCTF challenges</span></div>
+    <div class="stat"><b>∞</b><span>Next experiments</span></div>
+   </div>
+   <div class="section-title"><h3>◈ CHOOSE YOUR ADVENTURE</h3><span>SELECT A DESTINATION →</span></div>
+   <div class="quick-grid">
+    <button class="quick" data-go="dex"><span class="symbol">🎮</span><b>Project Dex</b><small>Explore the collection</small></button>
+    <button class="quick" data-go="badges"><span class="symbol">🏅</span><b>Badge Case</b><small>Milestones & achievements</small></button>
+    <button class="quick" data-go="skills"><span class="symbol">⚡</span><b>Skill Tree</b><small>Domains & tech stack</small></button>
+    <button class="quick" data-go="profile"><span class="symbol">🧑‍💻</span><b>Trainer Profile</b><small>Identity & connections</small></button>
+   </div>
+  </section>
+
+  <section class="page" id="page-dex" hidden>
+   <div class="page-head"><div><h2>PROJECT POKÉDEX</h2><p>Every repository has a story.</p></div><div class="page-no">002</div></div>
+   <div class="dex-controls"><input id="search" type="search" placeholder="Search project or language..." aria-label="Search projects"><select id="sort" aria-label="Sort projects"><option value="featured">Featured first</option><option value="stars">Most stars</option><option value="name">A–Z</option><option value="updated">Recently updated</option></select></div>
+   <div class="filters" id="filters">
+    <button class="filter active" data-filter="all">ALL TYPES</button><button class="filter" data-filter="security">DARK / SECURITY</button><button class="filter" data-filter="ai">PSYCHIC / AI</button><button class="filter" data-filter="robotics">STEEL / ROBOTICS</button><button class="filter" data-filter="systems">ELECTRIC / SYSTEMS</button><button class="filter" data-filter="web">NORMAL / WEB</button>
+   </div>
+   <div class="project-grid" id="projects"><div class="loading">CONNECTING TO GITHUB...</div></div>
+   <div class="detail" id="detail" aria-live="polite"><h4>POKÉDEX DATA</h4><p>Select a project to view its entry.</p></div>
+  </section>
+
+  <section class="page" id="page-badges" hidden>
+   <div class="page-head"><div><h2>BADGE COLLECTION</h2><p>Milestones earned along the journey.</p></div><div class="page-no">003</div></div>
+   <div class="badge-intro"><span class="trophy">🏆</span><div><div class="mini">TRAINER ACHIEVEMENTS</div><p>A custom portfolio badge case for documented accomplishments, platforms explored, and technical domains pursued.</p></div></div>
+   <div class="section-title"><h3>◈ ACHIEVEMENT BADGES</h3><span>PERSONAL RECORD</span></div>
+   <div class="badge-grid">
+    <article class="badge-card earned"><div class="medal">☠</div><h4>CTF HUNTER</h4><p>Completed 125+ PicoCTF challenges, as reported by the trainer.</p><span class="badge-label">REPORTED ACHIEVEMENT</span></article>
+    <article class="badge-card earned"><div class="medal">🐧</div><h4>LINUX EXPLORER</h4><p>Hands-on learning with Linux environments and command-line tools.</p><span class="badge-label">LEARNING MILESTONE</span></article>
+    <article class="badge-card earned"><div class="medal">🔓</div><h4>WARGAME ROOKIE</h4><p>OverTheWire security wargame practice.</p><span class="badge-label">PRACTICE MILESTONE</span></article>
+    <article class="badge-card"><div class="medal">🧠</div><h4>NEURAL TINKERER</h4><p>Machine learning, LLMs, and computer vision experiments.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+    <article class="badge-card"><div class="medal">🤖</div><h4>ROBOT BUILDER</h4><p>Exploring ROS 2, microcontrollers, sensors and simulations.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+    <article class="badge-card"><div class="medal">⚙</div><h4>SYSTEMS SMITH</h4><p>Low-level programming, CPU concepts and operating systems.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+    <article class="badge-card"><div class="medal">⛓</div><h4>CHAIN RESEARCHER</h4><p>Blockchain and distributed technology explorations.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+    <article class="badge-card"><div class="medal">🌐</div><h4>NETWORK SCOUT</h4><p>Networking, HTTP and security fundamentals.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+    <article class="badge-card"><div class="medal">🔬</div><h4>RESEARCH MIND</h4><p>Independent experiments across computing and physics.</p><span class="badge-label">PROJECT DOMAIN</span></article>
+   </div>
+   <p class="badge-note">These are custom portfolio badges, not official certificates or badges issued by PicoCTF, OverTheWire, or another platform. Only the specifically reported accomplishments are represented as completed milestones; other badges describe areas of exploration.</p>
+   <div class="actions"><a class="btn dark" href="https://tryhackme.com/p/pranit.dhanade" target="_blank" rel="noopener noreferrer">VIEW TRYHACKME PROFILE ↗</a><a class="btn" href="https://github.com/pranitdhanade-sys" target="_blank" rel="noopener noreferrer">VIEW GITHUB ↗</a></div>
+  </section>
+
+  <section class="page" id="page-skills" hidden>
+   <div class="page-head"><div><h2>TRAINER SKILL TREE</h2><p>Types of technology in your arsenal.</p></div><div class="page-no">004</div></div>
+   <div class="badge-intro"><span class="trophy">⚡</span><div><div class="mini">SPECIALIZATION MAP</div><p>A domain-based skill tree. These categories describe your learning interests, not independently verified proficiency scores.</p></div></div>
+   <div class="skill-list">
+    <article class="skill-row"><div><div class="skill-symbol">☠ 🔐</div><div class="skill-name">Cybersecurity</div></div><div><div class="skill-desc">CTF practice, security fundamentals, Linux, networking and security tooling.</div><div class="skill-tags"><span>CTF</span><span>Networking</span><span>Linux</span><span>TryHackMe</span></div></div></article>
+    <article class="skill-row"><div><div class="skill-symbol">🐧 ⚙</div><div class="skill-name">Systems</div></div><div><div class="skill-desc">Low-level programming, architecture, OS concepts and command-line workflows.</div><div class="skill-tags"><span>C</span><span>C++</span><span>Assembly</span><span>Operating systems</span></div></div></article>
+    <article class="skill-row"><div><div class="skill-symbol">🧠 ✦</div><div class="skill-name">AI / ML</div></div><div><div class="skill-desc">Model experiments, computer vision, LLMs and numerical computing.</div><div class="skill-tags"><span>Python</span><span>PyTorch</span><span>TensorFlow</span><span>JAX</span></div></div></article>
+    <article class="skill-row"><div><div class="skill-symbol">🤖 ⚙</div><div class="skill-name">Robotics</div></div><div><div class="skill-desc">Embedded systems, robot simulation, sensor integration and automation.</div><div class="skill-tags"><span>ROS 2</span><span>Arduino</span><span>ESP32</span><span>IoT</span></div></div></article>
+    <article class="skill-row"><div><div class="skill-symbol">⛓ ◆</div><div class="skill-name">Blockchain</div></div><div><div class="skill-desc">Distributed systems concepts and blockchain development experiments.</div><div class="skill-tags"><span>Blockchain</span><span>Distributed systems</span></div></div></article>
+    <article class="skill-row"><div><div class="skill-symbol">🌐 ▣</div><div class="skill-name">Web / Backend</div></div><div><div class="skill-desc">Application development, APIs, databases and containerized workflows.</div><div class="skill-tags"><span>JavaScript</span><span>FastAPI</span><span>Flask</span><span>SQL</span><span>Docker</span></div></div></article>
+   </div>
+   <div class="section-title"><h3>◈ NEXT EVOLUTION</h3><span>QUEST LOG</span></div>
+   <div class="quick-grid">
+    <article class="quick"><span class="symbol">📘</span><b>Deepen foundations</b><small>Algorithms, networks and OS</small></article>
+    <article class="quick"><span class="symbol">🧪</span><b>Build experiments</b><small>Research and reproducible projects</small></article>
+    <article class="quick"><span class="symbol">🚀</span><b>Ship projects</b><small>Documentation, testing and releases</small></article>
+   </div>
+  </section>
+
+  <section class="page" id="page-profile" hidden>
+   <div class="page-head"><div><h2>TRAINER PROFILE</h2><p>Player identity, stats and connections.</p></div><div class="page-no">005</div></div>
+   <div class="profile-layout">
+    <div class="id-card"><img class="profile-avatar" src="https://github.com/pranitdhanade-sys.png" alt="Pranit's GitHub avatar"><h3>PRANIT DHANADE</h3><p>Computer Science Student</p><p>Trainer Class: Developer</p><div class="id-number">TRAINER ID // PRANIT-001</div></div>
+    <div class="profile-info">
+     <h3>◈ PLAYER RECORD</h3>
+     <div class="info-row"><span>NAME</span><strong>Pranit Dhanade</strong></div>
+     <div class="info-row"><span>EDUCATION</span><strong>B.Tech, Computer Science</strong></div>
+     <div class="info-row"><span>INSTITUTE</span><strong>VIT Pune</strong></div>
+     <div class="info-row"><span>GRADUATION</span><strong>Expected 2029</strong></div>
+     <div class="info-row"><span>INTERESTS</span><strong>Cybersecurity, Blockchain, IoT, AI/ML, Robotics</strong></div>
+     <div class="info-row"><span>WORK STYLE</span><strong>Learn by building and experimenting</strong></div>
+    </div>
+   </div>
+   <div class="bio"><div class="mini">ABOUT THE TRAINER</div><p>I'm a computer science student interested in how computing systems work, from low-level software and cybersecurity to intelligent models, robotics and physics simulations.</p><p>I enjoy practical experiments, open-source projects, Linux and exploring challenging technical concepts.</p></div>
+   <div class="section-title" id="profile-links"><h3>◈ CONNECTION TERMINAL</h3><span>OPEN EXTERNAL PROFILE</span></div>
+   <div class="quick-grid">
+    <a class="quick" href="https://github.com/pranitdhanade-sys" target="_blank" rel="noopener noreferrer"><span class="symbol">⌘</span><b>GitHub</b><small>Code & repositories ↗</small></a>
+    <a class="quick" href="https://www.linkedin.com/in/pranit-dhanade-951478201/" target="_blank" rel="noopener noreferrer"><span class="symbol">▣</span><b>LinkedIn</b><small>Professional profile ↗</small></a>
+    <a class="quick" href="https://tryhackme.com/p/pranit.dhanade" target="_blank" rel="noopener noreferrer"><span class="symbol">☠</span><b>TryHackMe</b><small>Cybersecurity profile ↗</small></a>
+   </div>
+   <div class="section-title"><h3>◈ TRAINER'S FAVORITES</h3><span>SELECTED REPOS</span></div>
+   <div class="quick-grid">
+    <button class="quick" data-repo="Kalam"><span class="symbol">🎮</span><b>Kalam</b><small>Accessible Morse typing</small></button>
+    <button class="quick" data-repo="Linuxify"><span class="symbol">🐧</span><b>Linuxify</b><small>Linux & systems</small></button>
+    <button class="quick" data-repo="Cybersecurity-Projects"><span class="symbol">🔐</span><b>Cybersecurity</b><small>Security projects</small></button>
+   </div>
+  </section>
+ </div>
+ <div class="toast" id="toast" role="status">SYSTEM READY // SELECT A SCREEN</div>
+ <footer><span>© 2026 PRANITDEX</span><span>BUILT WITH PIXELS ♥</span><a href="#" id="home-link">RETURN HOME ↑</a></footer>
+</main>
+</div>
+
+<script>
+const USER="pranitdhanade-sys";
+const featured=[
+{name:"Kalam",description:"Joystick-based Morse typing aid for accessible text input.",category:"robotics",icon:"🎮",topics:["Arduino","Accessibility"],url:`https://github.com/${USER}/Kalam`},
+{name:"Linuxify",description:"Linux-focused project exploring command-line and systems workflows.",category:"systems",icon:"🐧",topics:["Linux","Systems"],url:`https://github.com/${USER}/Linuxify`},
+{name:"Cybersecurity-Projects",description:"Hands-on cybersecurity learning and technical experiments.",category:"security",icon:"🔐",topics:["Security","CTF"],url:`https://github.com/${USER}/Cybersecurity-Projects`},
+{name:"Chatbot-llm",description:"Experiments with chatbots and large language models.",category:"ai",icon:"🧠",topics:["LLM","Python"],url:`https://github.com/${USER}/Chatbot-llm`},
+{name:"CPU",description:"Computer architecture and CPU-level programming explorations.",category:"systems",icon:"⚡",topics:["CPU","Architecture"],url:`https://github.com/${USER}/CPU`},
+{name:"ESP32-Projects",description:"Microcontroller, sensor and IoT experiments.",category:"robotics",icon:"🤖",topics:["ESP32","IoT"],url:`https://github.com/${USER}/ESP32-Projects`},
+{name:"Blockchain-Projects",description:"Blockchain technology and distributed system experiments.",category:"ai",icon:"⛓️",topics:["Blockchain"],url:`https://github.com/${USER}/Blockchain-Projects`},
+{name:"Computer-vision-Projects",description:"Computer vision and image processing experiments.",category:"ai",icon:"👁️",topics:["Vision","ML"],url:`https://github.com/${USER}/Computer-vision-Projects`},
+{name:"Acadly",description:"An application project exploring backend and platform architecture.",category:"web",icon:"📚",topics:["Backend","Web"],url:`https://github.com/${USER}/Acadly`},
+{name:"C-Projects",description:"Programming exercises and systems work in C.",category:"systems",icon:"💾",topics:["C"],url:`https://github.com/${USER}/C-Projects`},
+{name:"Assembly",description:"Low-level programming explorations using assembly.",category:"systems",icon:"🛠️",topics:["Assembly"],url:`https://github.com/${USER}/Assembly`},
+{name:"GA-Projects",description:"Genetic algorithms and evolutionary computation experiments.",category:"ai",icon:"🧬",topics:["Algorithms","AI"],url:`https://github.com/${USER}/GA-Projects`},
+{name:"HTTP-Projects",description:"Experiments with HTTP, networking and protocol fundamentals.",category:"security",icon:"🌐",topics:["HTTP","Networking"],url:`https://github.com/${USER}/HTTP-Projects`},
+{name:"Jax-projects",description:"Numerical computing and ML experiments with JAX.",category:"ai",icon:"🔬",topics:["JAX","ML"],url:`https://github.com/${USER}/Jax-projects`}
+];
+const labels={security:"DARK / SECURITY",ai:"PSYCHIC / AI",robotics:"STEEL / ROBOTICS",systems:"ELECTRIC / SYSTEMS",web:"NORMAL / WEB"};
+const icons={security:"🔐",ai:"🧠",robotics:"🤖",systems:"⚡",web:"🧩"};
+let repos=[],activeFilter="all",selected=null,soundOn=false,ctx;
+
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function safeUrl(s){try{let u=new URL(s);return u.protocol==="https:"&&u.hostname==="github.com"?u.href:"#"}catch{return "#"}}
+function ping(){if(!soundOn)return;try{ctx ||= new(window.AudioContext||window.webkitAudioContext)();let o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=640;g.gain.value=.025;o.connect(g);g.connect(ctx.destination);o.start();o.stop(ctx.currentTime+.055)}catch{}}
+function toast(s){document.getElementById("toast").textContent="SYSTEM // "+s}
+function go(page,focus){
+ document.querySelectorAll(".page").forEach(p=>p.hidden=p.id!=="page-"+page);
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ document.getElementById("crumb").textContent="REGION / "+page.toUpperCase();
+ window.scrollTo({top:0,behavior:"smooth"});
+ if(focus==="links")setTimeout(()=>document.getElementById("profile-links").scrollIntoView({behavior:"smooth",block:"center"}),80);
+ toast("SCREEN LOADED // "+page.toUpperCase());ping();
+}
+document.querySelectorAll("[data-page]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.page,b.dataset.focus)));
+document.querySelectorAll("[data-go]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.go)));
+document.getElementById("home-link").addEventListener("click",e=>{e.preventDefault();go("home")});
+document.getElementById("sound").addEventListener("click",e=>{soundOn=!soundOn;e.currentTarget.textContent=soundOn?"♪ ON":"♪ OFF";toast(soundOn?"SOUND ENABLED":"SOUND DISABLED");ping()});
+
+function category(r){
+ const n=(r.name+" "+(r.topics||[]).join(" ")).toLowerCase();
+ if(/cyber|security|malware|exploit|ctf|picoctf|http-projects/.test(n))return"security";
+ if(/esp32|arduino|robot|ros|iot|kalam|embedded/.test(n))return"robotics";
+ if(/llm|machine.learning|computer.vision|pytorch|tensorflow|jax|neural|genetic|blockchain|weather|ai/.test(n))return"ai";
+ if(/cpu|assembly|kernel|compiler|cuda|system|linux|c.projects/.test(n))return"systems";
+ return"web";
+}
+function normalize(r){
+ let c=category(r);
+ return{name:r.name,description:r.description||"Open-source project. See the repository for details.",url:safeUrl(r.html_url),stars:r.stargazers_count||0,updated:r.updated_at||"",language:r.language||"",topics:r.topics||[],category:c,icon:icons[c],featured:featured.some(f=>f.name.toLowerCase()===r.name.toLowerCase())};
+}
+function render(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const sort=document.getElementById("sort").value;
+ let list=repos.filter(r=>(activeFilter==="all"||r.category===activeFilter)&&[r.name,r.description,r.language,...r.topics].join(" ").toLowerCase().includes(q));
+ if(sort==="name")list.sort((a,b)=>a.name.localeCompare(b.name));
+ if(sort==="stars")list.sort((a,b)=>b.stars-a.stars);
+ if(sort==="updated")list.sort((a,b)=>new Date(b.updated||0)-new Date(a.updated||0));
+ if(sort==="featured")list.sort((a,b)=>Number(b.featured)-Number(a.featured));
+ const root=document.getElementById("projects");
+ if(!list.length){root.innerHTML='<div class="empty">NO PROJECTS FOUND. Try another search.</div>';return}
+ root.innerHTML=list.map((r,i)=>`<article class="project ${selected===r.name?"selected":""}" tabindex="0" role="button" data-name="${esc(r.name)}"><div class="project-top"><span class="project-num">NO. ${String(i+1).padStart(3,"0")}</span><span class="project-icon">${esc(r.icon)}</span></div><h4>${esc(r.name)}</h4><p>${esc(r.description)}</p><div class="types"><span class="type ${r.category}">${esc(labels[r.category])}</span>${r.language?`<span class="type">${esc(r.language)}</span>`:""}<span class="type">★ ${r.stars}</span></div></article>`).join("");
+ root.querySelectorAll(".project").forEach(card=>{
+  const open=()=>showRepo(card.dataset.name);
+  card.addEventListener("click",open);
+  card.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open()}});
+ });
+}
+function showRepo(name){
+ const r=repos.find(x=>x.name===name);if(!r)return;
+ selected=name;
+ document.getElementById("detail").innerHTML=`<h4>◈ ${esc(r.name.toUpperCase())}</h4><p>${esc(r.description)}</p><p><b>TYPE:</b> ${esc(labels[r.category])}</p><p><b>LANGUAGE:</b> ${esc(r.language||"Not specified")}</p><p><b>STARS:</b> ${r.stars} ★</p><p><b>TOPICS:</b> ${esc(r.topics.join(", ")||"See repository README")}</p><a class="btn dark" href="${safeUrl(r.url)}" target="_blank" rel="noopener noreferrer">OPEN REPOSITORY ↗</a>`;
+ render();toast("PROJECT SELECTED // "+r.name.toUpperCase());ping();
+}
+document.getElementById("search").addEventListener("input",render);
+document.getElementById("sort").addEventListener("change",render);
+document.getElementById("filters").addEventListener("click",e=>{
+ const b=e.target.closest("[data-filter]");if(!b)return;
+ activeFilter=b.dataset.filter;
+ document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x===b));
+ render();ping();
+});
+document.querySelectorAll("[data-repo]").forEach(b=>b.addEventListener("click",()=>{
+ go("dex");document.getElementById("search").value="";
+ activeFilter="all";document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.dataset.filter==="all"));
+ render();showRepo(b.dataset.repo);
+}));
+async function load(){
+ try{
+  const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),9000);
+  const res=await fetch(`https://api.github.com/users/${USER}/repos?per_page=100&sort=updated`,{headers:{Accept:"application/vnd.github+json"},signal:ctrl.signal});
+  clearTimeout(timer);if(!res.ok)throw Error("GitHub "+res.status);
+  const data=await res.json();
+  repos=data.filter(r=>!r.archived).map(normalize);
+  const names=new Set(repos.map(r=>r.name.toLowerCase()));
+  featured.filter(f=>!names.has(f.name.toLowerCase())).forEach(f=>repos.push({...f,stars:0,updated:"",language:"",featured:true}));
+  document.getElementById("repo-count").textContent=repos.length;
+  render();toast("GITHUB SYNC COMPLETE // "+data.length+" PUBLIC REPOSITORIES RECEIVED");
+ }catch{
+  repos=featured.map(f=>({...f,stars:0,updated:"",language:"",featured:true}));
+  document.getElementById("repo-count").textContent=repos.length+"+";
+  render();toast("OFFLINE MODE // FEATURED REPOSITORIES LOADED");
+ }
+}
+load();
+</script>
+</body>
+</html>
